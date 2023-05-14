@@ -44,7 +44,4 @@ def gaussian_kernel(shape: tuple[int, int] = (3, 3), sigma: float = 1.0):
             a[i, j] = np.exp(-(r ** 2.0 + c ** 2.0) / (2.0 * sigma ** 2.0))
     a /= (2.0 * np.pi * sigma ** 2.0)
 
-    a /= a.sum()
-    a *= 49.0
-
     return a
