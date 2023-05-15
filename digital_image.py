@@ -18,6 +18,9 @@ class DigitalImage:
      _ndim: Number of dimensions
      _is_grayscale: True if the image is grayscale. False if RGB.
      _name: Filename.
+     _phase: phase of fft
+     _amp:   amplitude of fft
+
 
      Methods
      _______
@@ -43,8 +46,14 @@ class DigitalImage:
      Number of image dimensions
     is_grayscale:
        True if the image is grayscale. False if colored.
+    img:
+       the underlying 2D array
+    amp:
+       amplitude of fft
     """
     def __init__(self, img_path: str):
+        self._phase = None
+        self._amp = None
         img = cv.imread(img_path, 0)
         print(f'Loaded image with shape {img.shape}')
         self._img = np.array(img, dtype=np.float32) / 255.0
@@ -65,10 +74,7 @@ class DigitalImage:
         assert n % 2 == 1, f'Expected odd sized kernel. Got {m}X{n}'
         rows_half_sz = m // 2
         cols_half_sz = n // 2
-        print('rows_half_sz', rows_half_sz)
-        print('cols_half_sz', cols_half_sz)
         padded = self.pad(pad_sizes=(rows_half_sz, rows_half_sz, cols_half_sz, cols_half_sz))
-        print(f'Padded image has shape {padded.shape}')
         img = conv(padded)[0][rows_half_sz:-rows_half_sz, cols_half_sz:-cols_half_sz]
         if log_mse:
             print('MSE after filter', self.mse(img))
@@ -113,19 +119,19 @@ class DigitalImage:
         # Centering frequencies:
         fshift = np.fft.fftshift(f)
         # Calculating the amplitude and phase:
-        self.amp = np.abs(fshift)
-        self.phase = np.angle(fshift)
+        self._amp = np.abs(fshift)
+        self._phase = np.angle(fshift)
         return
         
     def disp_amplitude_phase(self):
-        ''' Function that displays the amplitude and phase in a plot'''
+        """ Function that displays the amplitude and phase in a plot"""
 
         # We display the amplitude in decibels to better see the values.
-        self.amp_dB = 20*np.log(np.abs(self.amp))
+        amp_dB = 20*np.log(np.abs(self._amp))
         fig, axes = plt.subplots(1, 2, figsize=(12, 6))
-        z = axes[0].imshow(self.amp_dB, cmap='gray')
+        z = axes[0].imshow(amp_dB, cmap='gray')
         axes[0].set_title(f'Amplitude - Image \'{self._name}\'')
-        axes[1].imshow(self.phase, cmap='gray')
+        axes[1].imshow(self._phase, cmap='gray')
         axes[1].set_title(f'Phase - Image \'{self._name}\'')
         cbar = fig.colorbar(z, ax=axes[0], fraction=0.046, pad=0.04)
         cbar.ax.set_ylabel('Amplitude (dB)', rotation=90)
@@ -148,3 +154,11 @@ class DigitalImage:
     @property
     def is_grayscale(self):
         return self._is_grayscale
+
+    @property
+    def img(self):
+        return self._img
+
+    @property
+    def amp(self):
+        return self._amp
