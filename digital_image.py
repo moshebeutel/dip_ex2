@@ -89,10 +89,8 @@ class DigitalImage:
         :return: None
         """
         sh = np.copy(self._img)
-        # sh *= 255.0
-        # sh = sh.astype(int)
         sh = cv.normalize(sh, None, 255, 0, cv.NORM_MINMAX, cv.CV_8UC1)
-        cv.imshow(title + f'_{self._name}', sh)
+        cv.imshow(title, sh)
         cv.waitKey(0)
 
     def mse(self, other) -> float:

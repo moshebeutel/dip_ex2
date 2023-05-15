@@ -50,8 +50,7 @@ class Kernel:
             f'Kernel expected {self._mat.shape} shaped array. Got {target_mat.shape}'
 
         res = np.multiply(self._mat, target_mat)
-        res = res.mean()
-        assert isinstance(res, float), f'Expected result be float. Got {type(res)}'
+        res = float(res.mean())
         return res
 
     @property

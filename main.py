@@ -13,8 +13,10 @@ images_path = './images/'
 KernelRegistry = {'horizontal_grad_right': Kernel(mat=np.array([-1.0, 0.0, 1.0] * 3, dtype=np.float32).reshape(3, 3)),
                   'horizontal_grad_left': Kernel(mat=np.array([1.0, 0.0, -1.0] * 3, dtype=np.float32).reshape(3, 3)),
                   'gaussian_7X7_sigma_10': Kernel(mat=gaussian_kernel(shape=(7, 7), sigma=2.0)),
-                  'sobel': Kernel(
-                      mat=np.array([[1.0, 0.0, -1.0], [2.0, 0.0, -2.0], [1.0, 0.0, -1.0]], dtype=np.float32))}
+                  'sobel_vertical_edges': Kernel(
+                      mat=np.array([[1.0, 0.0, -1.0], [2.0, 0.0, -2.0], [1.0, 0.0, -1.0]], dtype=np.float32)),
+                  'sobel_horizontal_edges': Kernel(
+                      mat=np.array([[1.0, 2.0, 1.0], [0.0, 0.0, 0.0], [-1.0, -2.0, -1.0]], dtype=np.float32))}
 
 
 def conv2d(original_img: DigitalImage, kernel_name: str) -> DigitalImage:
@@ -54,9 +56,9 @@ def question2a(clean_image: DigitalImage, noisy_image: DigitalImage):
     :return: None
     """
     clean_image_grad = conv2d(original_img=clean_image, kernel_name='horizontal_grad_left')
-    clean_image_grad.show()
+    clean_image_grad.show(title='Clean Image after Gradient filter')
     noisy_image_grad = conv2d(original_img=noisy_image, kernel_name='horizontal_grad_left')
-    noisy_image_grad.show()
+    noisy_image_grad.show(title='Noisy Image after Gradient filter')
 
 
 def question2bc(noisy_image: DigitalImage):
@@ -68,7 +70,7 @@ def question2bc(noisy_image: DigitalImage):
     """
     noisy_image_after_gaussian = conv2d(original_img=noisy_image, kernel_name='gaussian_7X7_sigma_10')
     noisy_image_after_gaussian.show(title='Noisy Image after Gaussian Filter')
-    noisy_image_after_gaussian_and_grad = conv2d(original_img=noisy_image, kernel_name='horizontal_grad_right')
+    noisy_image_after_gaussian_and_grad = conv2d(original_img=noisy_image_after_gaussian, kernel_name='horizontal_grad_right')
     noisy_image_after_gaussian_and_grad.show(title='Noisy Image after Gaussian and Gradient Filters')
 
 
@@ -78,8 +80,11 @@ def question2d(noisy_image: DigitalImage):
     :param noisy_image:  DigitalImage. Original noisy image.
     :return:
     """
-    noisy_image_after_sobel = conv2d(original_img=noisy_image, kernel_name='sobel')
-    noisy_image_after_sobel.show(title='Noisy Image after Sobel Filter')
+    noisy_image_after_sobel_vertical = conv2d(original_img=noisy_image, kernel_name='sobel_vertical_edges')
+    noisy_image_after_sobel_vertical.show(title='Noisy Image after Sobel Vertical Edges Filter')
+    noisy_image_after_sobel_vertical_and_horizontal = conv2d(original_img=noisy_image_after_sobel_vertical,
+                                                             kernel_name='sobel_horizontal_edges')
+    noisy_image_after_sobel_vertical_and_horizontal.show(title='Noisy Image after Sobel Vertical and Horizontal Filter')
 
 
 def main():
@@ -87,8 +92,8 @@ def main():
     clean_image.show(title='Original Clean Image')
     noisy_image = load_image(original_img_filename='I_n.jpg')
     noisy_image.show(title='Original Noisy Image')
-    question2a(clean_image=clean_image, noisy_image=noisy_image)
-    question2bc(noisy_image=noisy_image)
+    # question2a(clean_image=clean_image, noisy_image=noisy_image)
+    # question2bc(noisy_image=noisy_image)
     question2d(noisy_image=noisy_image)
 
 
