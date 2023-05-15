@@ -3,6 +3,7 @@ from __future__ import annotations
 import copy
 import os.path
 import numpy as np
+from matplotlib import pyplot as plt
 
 from conv import Conv2d, Kernel
 from digital_image import DigitalImage
@@ -165,8 +166,8 @@ def main():
     clean_image.show(title='Original Clean Image')
     noisy_image = load_image(original_img_filename='I_n.jpg')
     noisy_image.show(title='Original Noisy Image')
-    # question2a(clean_image=clean_image, noisy_image=noisy_image)
-    # question2bc(noisy_image=noisy_image)
+    question2a(clean_image=clean_image, noisy_image=noisy_image)
+    question2bc(noisy_image=noisy_image)
     question2d(noisy_image=noisy_image)
     
     # Question 3:
@@ -177,6 +178,8 @@ def main():
     zebra_image = load_image(original_img_filename='zebra.jpeg')
     question3ac(image1=cheetah_image, image2=zebra_image)
     question3d(image1=cheetah_image, image2=zebra_image)
+    plt.show()
+    print('Finished')
 
 
 # Press the green button in the gutter to run the script.
