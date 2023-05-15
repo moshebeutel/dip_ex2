@@ -104,7 +104,7 @@ def question3ac(image1: DigitalImage, image2: DigitalImage):
     # # Noisy Image 'I_n':
     image2.calc_amplitude_phase()
     fig2 = image2.disp_amplitude_phase()
-    fig2.savefig('Q3a - Noisy Image Amplitude Phase.png')
+#     fig2.savefig('Q3a - Noisy Image Amplitude Phase.png')
 
 
 def question3b(image1: DigitalImage, image2: DigitalImage):
@@ -123,7 +123,7 @@ def question3b(image1: DigitalImage, image2: DigitalImage):
     cbar = fig.colorbar(z, ax=ax, fraction=0.046, pad=0.04)
     cbar.ax.set_ylabel('Amplitude (dB)', rotation=90)
     ax.set_title(f'Amplitude Subtraction')
-    fig.savefig('Subsec2 - Amplitude Substraction.png')
+#     fig.savefig('Subsec2 - Amplitude Substraction.png')
 
     
 def question3d(image1: DigitalImage, image2: DigitalImage):
@@ -157,7 +157,7 @@ def question3d(image1: DigitalImage, image2: DigitalImage):
     z = np.real(combined_img)  # We take the real value, as the imaginary parts are negligible.
     plt.imshow(z, cmap='gray')
     plt.title('Combined Zebra - Chita Image')
-    fig.savefig('Subsec4 - Combined Image.png')
+#     fig.savefig('Subsec4 - Combined Image.png')
     
     
 def main():
