@@ -87,7 +87,80 @@ def question2d(noisy_image: DigitalImage):
     noisy_image_after_sobel_vertical_and_horizontal.show(title='Noisy Image after Sobel Vertical and Horizontal Filter')
 
 
+def question3ac(image1: DigitalImage, image2: DigitalImage):
+    """
+    Question 3 subsections a,c: Calculate Fourier transform for the two images.
+     Visualize the amplitude and the phase.
+     The function fulfills the task of *both* subsections 'a' and 'c'.
+    :param image1: DigitalImage.
+    :param image2: DigitalImage.
+    :return: None
+    """
+    image1.calc_amplitude_phase()
+    fig1 = image1.disp_amplitude_phase()
+    fig1.savefig('Q3a - Regular Image Amplitude Phase.png')
+
+    # # Noisy Image 'I_n':
+    image2.calc_amplitude_phase()
+    fig2 = image2.disp_amplitude_phase()
+    fig2.savefig('Q3a - Noisy Image Amplitude Phase.png')
+
+
+def question3b(image1: DigitalImage, image2: DigitalImage):
+    """
+    Question 3 subsection b: Subtract the amplitude of the  Fourier transforms for the two images 'I' and 'I_n'.
+     Visualize the amplitude of the result.
+    :param image1: DigitalImage.
+    :param image2: DigitalImage.
+    :return: None
+    """
+
+    sub =  np.abs(image1.amp - image2.amp)
+    fig = plt.figure(figsize=(8,4))
+    ax = plt.gca()
+    z = ax.imshow(20*np.log(sub), cmap='gray')
+    cbar = fig.colorbar(z, ax=ax, fraction=0.046, pad=0.04)
+    cbar.ax.set_ylabel('Amplitude (dB)', rotation=90)
+    ax.set_title(f'Amplitude Subtraction')
+    fig.savefig('Subsec2 - Amplitude Substraction.png')
+
+    
+def question3d(image1: DigitalImage, image2: DigitalImage):
+    """
+    Question 3 part d: Combine the 'chita.jpeg' and 'zebra.jpeg' images using
+    the amplitude of 'chita.jpeg' with the phase of 'zebra.jpeg'.
+    Visualize the combined image.
+    :param image1: DigitalImage. Cheetah image.
+    :param image2: DigitalImage. Zebra image.
+    :return: None
+    """
+    img_chita = image1._img
+    img_zebra = image2._img
+    # Note - we can't use the original images as their dimension mismatch. We have to manually pad both images into
+    #  larger images of the same size.
+    m = max(img_chita.shape[0], img_zebra.shape[1])
+    n = max(img_chita.shape[0], img_zebra.shape[1])
+
+    img_chita_pad = np.zeros([m,n])
+    img_zebra_pad = np.zeros([m,n])
+    img_chita_pad[:img_chita.shape[0], :img_chita.shape[1]] = img_chita
+    img_zebra_pad[:img_zebra.shape[0], :img_zebra.shape[1]] = img_zebra
+
+    # Caclculating the Fourier transforms:
+    zebra_fft = np.fft.fft2(img_zebra_pad)
+    chita_fft = np.fft.fft2(img_chita_pad)
+    # Combining:
+    combined_fft = np.abs(chita_fft) * np.exp(1j * np.angle(zebra_fft))
+    combined_img = np.fft.ifft2(combined_fft)
+    fig = plt.figure()
+    z = np.real(combined_img)  # We take the real value, as the imaginary parts are negligible.
+    plt.imshow(z, cmap='gray')
+    plt.title('Combined Zebra - Chita Image')
+    fig.savefig('Subsec4 - Combined Image.png')
+    
+    
 def main():
+    # Question 2:
     clean_image = load_image(original_img_filename='I.jpg')
     clean_image.show(title='Original Clean Image')
     noisy_image = load_image(original_img_filename='I_n.jpg')
@@ -95,6 +168,15 @@ def main():
     # question2a(clean_image=clean_image, noisy_image=noisy_image)
     # question2bc(noisy_image=noisy_image)
     question2d(noisy_image=noisy_image)
+    
+    # Question 3:
+    question3ac(image1=clean_image, image2=noisy_image)
+    question3b(image1=clean_image, image2=noisy_image)
+    
+    cheetah_image = load_image(original_img_filename='chita.jpeg')
+    zebra_image = load_image(original_img_filename='zebra.jpeg')
+    question3ac(image1=cheetah_image, image2=zebra_image)
+    question3d(image1=cheetah_image, image2=zebra_image)
 
 
 # Press the green button in the gutter to run the script.
