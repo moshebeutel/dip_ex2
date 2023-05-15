@@ -6,7 +6,7 @@ import numpy as np
 
 from conv import Conv2d
 from utils import zero_pad
-
+from matplotlib import pyplot as plt
 
 class DigitalImage:
     """
@@ -103,6 +103,35 @@ class DigitalImage:
         result = np.square(self._img - other).sum()
         result /= (self.shape[0] * self.shape[1])
         return sqrt(result)
+    
+    def calc_amplitude_phase(self):
+        """
+        Calculate the amplitude and phase of the image
+        """
+        # Fourier transform of the image:
+        f = np.fft.fft2(self._img)
+        # Centering frequencies:
+        fshift = np.fft.fftshift(f)
+        # Calculating the amplitude and phase:
+        self.amp = np.abs(fshift)
+        self.phase = np.angle(fshift)
+        return
+        
+    def disp_amplitude_phase(self):
+        ''' Function that displays the amplitude and phase in a plot'''
+
+        # We display the amplitude in decibels to better see the values.
+        self.amp_dB = 20*np.log(np.abs(self.amp))
+        fig, axes = plt.subplots(1, 2, figsize=(12, 6))
+        z = axes[0].imshow(self.amp_dB, cmap='gray')
+        axes[0].set_title(f'Amplitude - Image \'{self._name}\'')
+        axes[1].imshow(self.phase, cmap='gray')
+        axes[1].set_title(f'Phase - Image \'{self._name}\'')
+        cbar = fig.colorbar(z, ax=axes[0], fraction=0.046, pad=0.04)
+        cbar.ax.set_ylabel('Amplitude (dB)', rotation=90)
+        fig.tight_layout(pad=8.0)
+        plt.show()
+        return fig
 
     @property
     def channels(self):
