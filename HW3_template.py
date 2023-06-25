@@ -99,7 +99,7 @@ def RANSAC(coordinates1, coordinates2, threshold, max_iterations=1000):
 # Main
 def main():
     # Make sure you use the right path
-    image1 = 'C/home/moshe/GIT/dip_ex2/images/Hanging1.png'
+    image1 = '/home/moshe/GIT/dip_ex2/images/Hanging1.png'
     image2 = '/home/moshe/GIT/dip_ex2/images/Hanging2.png'
 
     # Calculate good matches between the images and obtain keypoints
